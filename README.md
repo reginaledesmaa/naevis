@@ -34,3 +34,7 @@ For local development, use an exact redirect such as `http://127.0.0.1:5500/` if
 The identity verification screen is only a prototype UI; it does not collect or store official identity documents. Match, friends and compatibility data are demo data for the school project.
 
 Spotify playback features depend on Spotify account eligibility, browser support and Spotify's current developer policies.
+
+The identity verification screen is only a prototype UI; it does not collect or store official identity documents. Match, friends and compatibility data are demo data for the school project.
+
+Spotify playback features depend on Spotify account eligibility, browser support and Spotify's current developer policies.

@@ -1,4 +1,4 @@
-const C = window.NAEVIS_CONFIG || {};
+function getSpotifyConfig() { return window.NAEVIS_CONFIG || {}; }
 const genres = [
   'Pop','Rock','Indie','Alternative','Hip-Hop','Rap','R&B','Soul','Funk','Disco','Electrónica','House','Techno','Trance','Drum & Bass','Dubstep','Jazz','Blues','Reggae','Reggaetón','Trap','Afrobeats','Dancehall','K-Pop','J-Pop','Latin Pop','Salsa','Bachata','Cumbia','Regional Mexicano','Corridos','Rock en Español','Indie Pop','Indie Rock','Shoegaze','Dream Pop','Lo-Fi','Bedroom Pop','Hyperpop','Punk','Pop Punk','Metal','Heavy Metal','Hard Rock','Emo','Goth','Grunge','Clásica','Ópera','Folk','Country','Folk Pop','Singer-Songwriter','Soundtrack','Ambient','Chillout','Acoustic','Instrumental','Christian','Gospel','Bollywood','Afrobeat','Amapiano','UK Garage','Drill','Phonk','Vaporwave','New Wave','Post-Rock','Post-Punk','Ska','Flamenco','Tropical','Música mexicana'
 ];
@@ -113,12 +113,12 @@ function getAccessToken() {
 
 async function refreshAccessToken() {
   const refreshToken = localStorage.getItem('naevis_refresh_token');
-  if (!refreshToken || !C.spotifyClientId) return null;
+  if (!refreshToken || !getSpotifyConfig().spotifyClientId) return null;
 
   const body = new URLSearchParams({
     grant_type: 'refresh_token',
     refresh_token: refreshToken,
-    client_id: C.spotifyClientId
+    client_id: getSpotifyConfig().spotifyClientId
   });
 
   const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -148,7 +148,7 @@ async function validToken() {
 }
 
 async function spotifyLogin() {
-  if (!C.spotifyClientId) return toast('Add your Spotify Client ID in config.js first.');
+  if (!getSpotifyConfig().spotifyClientId) return toast('Add your Spotify Client ID in config.js first.');
 
   const verifier = randomString();
   const state = randomString(24);
@@ -166,11 +166,11 @@ async function spotifyLogin() {
 
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id: C.spotifyClientId,
+    client_id: getSpotifyConfig().spotifyClientId,
     scope,
     code_challenge_method: 'S256',
     code_challenge: await challenge(verifier),
-    redirect_uri: C.spotifyRedirectUri,
+    redirect_uri: getSpotifyConfig().spotifyRedirectUri,
     state
   });
 
@@ -184,7 +184,7 @@ async function callback() {
   const error = q.get('error');
   if (error) return toast('Spotify authorization was cancelled.');
   if (!code) return;
-  if (!C.spotifyClientId) return;
+  if (!getSpotifyConfig().spotifyClientId) return;
 
   const savedState = localStorage.getItem('naevis_state');
   if (savedState && returnedState !== savedState) return toast('Spotify security check failed.');
@@ -194,8 +194,8 @@ async function callback() {
     const body = new URLSearchParams({
       grant_type: 'authorization_code',
       code,
-      redirect_uri: C.spotifyRedirectUri,
-      client_id: C.spotifyClientId,
+      redirect_uri: getSpotifyConfig().spotifyRedirectUri,
+      client_id: getSpotifyConfig().spotifyClientId,
       code_verifier: verifier
     });
 
